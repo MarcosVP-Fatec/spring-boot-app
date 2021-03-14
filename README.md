@@ -2,4 +2,4 @@
 
 # spring-boot-app
 
-Para rodar utilize: mvn spring-goot:run
+Para rodar utilize: mvn spring-boot:run
