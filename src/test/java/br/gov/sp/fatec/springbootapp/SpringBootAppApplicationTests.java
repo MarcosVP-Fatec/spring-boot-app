@@ -15,6 +15,7 @@ import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
 import br.gov.sp.fatec.springbootapp.repository.AutorizacaoRepository;
 import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
+import br.gov.sp.fatec.springbootapp.service.SegurancaService;
 
 @SpringBootTest
 @Transactional
@@ -25,6 +26,8 @@ class SpringBootAppApplicationTests {
     private UsuarioRepository usuarioRepo;
     @Autowired 
     private AutorizacaoRepository autorizacaoRepo;
+    @Autowired
+    private SegurancaService segurancaService;
 
     /**
      * Função que cria um usuário para evitar reescrita em todas as classes de teste
@@ -186,6 +189,12 @@ class SpringBootAppApplicationTests {
         this.criaUsuarioTestolinoComAutorizacao(this.criaAutorizacaoTeste());
         List<Usuario> usuarios = usuarioRepo.buscarUsuariosPorNomeDeAutorizacao("#REGRA_TESTE");
         assertTrue(usuarios.size() == 1);
+    }
+
+    @Test
+    void testarServicoCriaUsuario(){
+        Usuario usuario = segurancaService.criarUsuario("Pessoa#normal", "senha123", "#REGRA_NORMAL");
+        assertNotNull(usuario);
     }
 
 }
