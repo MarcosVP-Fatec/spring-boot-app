@@ -67,28 +67,17 @@ class SpringBootAppApplicationTests {
     void testeTblUsuarioComAutorizacaoInsere(){
 
         Autorizacao autorizacao = new Autorizacao();
-        autorizacao.setNome("REGRA_DE__TESTE");
+        autorizacao.setNome("REGRA_TESTE_2");
         autorizacaoRepo.save(autorizacao);
 
         Usuario usuario = new Usuario();
-        usuario.setNome("Teste X");
+        usuario.setNome("MItces");
         usuario.setSenha("$enhaF0rte");
         
         usuario.setAutorizacoes(new HashSet<Autorizacao>());
         usuario.getAutorizacoes().add(autorizacao);
         usuarioRepo.save(usuario);
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
         assertEquals( usuario.getAutorizacoes().size(), 1);
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
-        System.out.println("#######################################################################");
         
     }
 
