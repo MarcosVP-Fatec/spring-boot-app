@@ -2,6 +2,9 @@ package br.gov.sp.fatec.springbootapp;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.HashSet;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -19,6 +22,7 @@ class SpringBootAppApplicationTests {
 
     @Autowired 
     private UsuarioRepository usuarioRepo;
+    @Autowired 
     private AutorizacaoRepository autorizacaoRepo;
 
 	@Test
@@ -51,28 +55,41 @@ class SpringBootAppApplicationTests {
     }
 
     @Test
-    void testeTbAutorizacaoInsere(){
+    void testeTblAutorizacaoInsere(){
 
         Autorizacao autorizacao = new Autorizacao();
         autorizacao.setNome("REGRA_DE__TESTE");
         autorizacaoRepo.save(autorizacao);
-/*
-        System.out.println("##########################################");
-        System.out.println("##########################################");
-        System.out.println(autorizacao.getId());
-        System.out.println(autorizacao.getNome());
-        System.out.println("##########################################");
-        System.out.println("##########################################");
-        //assertNotNull(autorizacao.getId());
-        assertNotNull(autorizacaoRepo.findById(autorizacao.getId()));*/
+        assertNotNull(autorizacao.getNome());
     }
 
     @Test
-    void testeTbUsuarioJoinAutorizacao(){
+    void testeTblUsuarioComAutorizacaoInsere(){
 
-        Usuario usuario = usuarioRepo.findById(1L).get();
-        assertEquals("ROLE_ADMIN", usuario.getAutorizacoes().iterator().next().getNome());
+        Autorizacao autorizacao = new Autorizacao();
+        autorizacao.setNome("REGRA_DE__TESTE");
+        autorizacaoRepo.save(autorizacao);
 
+        Usuario usuario = new Usuario();
+        usuario.setNome("Teste X");
+        usuario.setSenha("$enhaF0rte");
+        
+        usuario.setAutorizacoes(new HashSet<Autorizacao>());
+        usuario.getAutorizacoes().add(autorizacao);
+        usuarioRepo.save(usuario);
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        assertEquals( usuario.getAutorizacoes().size(), 1);
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        System.out.println("#######################################################################");
+        
     }
 
 }

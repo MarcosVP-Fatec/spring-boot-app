@@ -1,10 +1,14 @@
 package br.gov.sp.fatec.springbootapp.entity;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -18,6 +22,14 @@ public class Autorizacao {
 
     @Column(name = "aut_nome")
     private String nome;
+
+    /*
+     * Aqui tem que ser o LAZY porque no Usuario.java é EAGER. 
+     * Não precisa mapear as colunas (Join Table) mas precisa colocar o atributo que contém este mapeamento
+     * O atributo "autorizacoes" do Usuario.java é onde está o mapeamento dos joins.
+     */
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "autorizacoes") 
+    private Set<Usuario> usuarios;
 
     public Long getId() {
         return id;
@@ -34,6 +46,15 @@ public class Autorizacao {
     public void setNome(String nome) {
         this.nome = nome;
     }
+
+    public Set<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(Set<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
    
+    
     
 }
