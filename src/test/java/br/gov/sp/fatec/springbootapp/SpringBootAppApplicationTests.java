@@ -60,25 +60,27 @@ class SpringBootAppApplicationTests {
         Autorizacao autorizacao = new Autorizacao();
         autorizacao.setNome("REGRA_DE__TESTE");
         autorizacaoRepo.save(autorizacao);
-        assertNotNull(autorizacao.getNome());
+        //assertNotNull(autorizacao.getNome());
+        assertNotNull(autorizacaoRepo.findById(autorizacao.getId()));
     }
 
     @Test
     void testeTblUsuarioComAutorizacaoInsere(){
 
         Autorizacao autorizacao = new Autorizacao();
-        autorizacao.setNome("REGRA_TESTE_2");
+        autorizacao.setNome("REGRA_TESTE_1");
         autorizacaoRepo.save(autorizacao);
 
         Usuario usuario = new Usuario();
-        usuario.setNome("MItces");
-        usuario.setSenha("$enhaF0rte");
+        usuario.setNome("Mitces");
+        usuario.setSenha("1dois3quatro");
         
         usuario.setAutorizacoes(new HashSet<Autorizacao>());
         usuario.getAutorizacoes().add(autorizacao);
         usuarioRepo.save(usuario);
-        assertEquals( usuario.getAutorizacoes().size(), 1);
-        
+
+        assertEquals("Mitces", usuarioRepo.getOne(usuario.getId()).getNome() );
+
     }
 
 }
