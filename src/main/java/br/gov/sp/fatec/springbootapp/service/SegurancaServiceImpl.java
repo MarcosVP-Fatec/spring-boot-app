@@ -56,7 +56,7 @@ public class SegurancaServiceImpl implements SegurancaService {
         if (usuarioOp.isPresent()){
             return usuarioOp.get();
         }
-        throw new RuntimeException("Usuário não encontrado!");
+        throw new RuntimeException("Usuário não encontrado -> id: " + String.valueOf(id));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class SegurancaServiceImpl implements SegurancaService {
 
         Usuario usuario = usuarioRepo.findByNome(nome);
         if (usuario != null) return usuario;
-        throw new RuntimeException("Usuário não encontrdo!");
+        throw new RuntimeException("Usuário não encontrado -> nome: " + nome);
 
     }
     

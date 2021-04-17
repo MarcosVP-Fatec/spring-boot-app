@@ -106,12 +106,13 @@ class SpringBootAppApplicationTests {
 
     @Test
     void testeTblAutorizacaoInsere(){
+
         testeQuebra("AUTORIZACAO - Insere");
         Autorizacao autorizacao = new Autorizacao();
         autorizacao.setNome("REGRA_DE__TESTE");
         autorizacaoRepo.save(autorizacao);
-        //assertNotNull(autorizacao.getNome());
-        assertNotNull(autorizacaoRepo.findById(autorizacao.getId()));
+        assertNotNull(autorizacao.getNome());
+        assertNotNull(autorizacao.getId());
     }
 
     @Test
@@ -122,14 +123,14 @@ class SpringBootAppApplicationTests {
         autorizacaoRepo.save(autorizacao);
 
         Usuario usuario = new Usuario();
-        usuario.setNome("Mitces");
+        usuario.setNome("#TESTE_USR");
         usuario.setSenha("1dois3quatro");
         
         usuario.setAutorizacoes(new HashSet<Autorizacao>());
         usuario.getAutorizacoes().add(autorizacao);
         usuarioRepo.save(usuario);
 
-        assertEquals("Mitces", usuarioRepo.getOne(usuario.getId()).getNome() );
+        assertEquals("#TESTE_USR", usuarioRepo.getOne(usuario.getId()).getNome() );
     }
 
     @Test
