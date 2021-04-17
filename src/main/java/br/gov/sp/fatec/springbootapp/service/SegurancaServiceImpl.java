@@ -62,11 +62,10 @@ public class SegurancaServiceImpl implements SegurancaService {
     @Override
     public Usuario buscarUsuarioPorNome(String nome) {
 
-        Usuario usuario = usuarioRepo.findByNome(nome);
+        Usuario usuario = usuarioRepo.findByNome(nome.toUpperCase());
         if (usuario != null) return usuario;
         throw new RuntimeException("Usuário não encontrado -> nome: " + nome);
 
     }
-    
     
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
 import br.gov.sp.fatec.springbootapp.service.SegurancaService;
 
+//@Produces("application/json")
 @RestController
 @RequestMapping(value = "/usuario")
 @CrossOrigin
