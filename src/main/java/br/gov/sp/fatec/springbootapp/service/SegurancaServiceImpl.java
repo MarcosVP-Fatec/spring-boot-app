@@ -17,7 +17,6 @@ import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
 public class SegurancaServiceImpl implements SegurancaService {
 
     @Autowired // Funciona para uma classe gerenciada pelo Spring. Então precisa da anoração
-               // @Service
     private AutorizacaoRepository autorizacaoRepo;
 
     @Autowired
@@ -29,7 +28,11 @@ public class SegurancaServiceImpl implements SegurancaService {
     public Usuario criarUsuario(String nome, String senha, String nomeAutorizacao) {
         Autorizacao autorizacao = autorizacaoRepo.findByNome(nomeAutorizacao);
 
-        // Se a autorização não existir vamos crar uma
+        if (usuarioRepo.existsByNome(nome.toUpperCase())){
+            throw new RuntimeException("Usuário já cadastrado -> nome: " + nome);            
+        }
+
+        // Se a autorização com o nome passado não existir vamos crar uma. Criado aqui porque esta tabela só tem o campo nome mesmo.
         if (autorizacao == null) {
             autorizacao = new Autorizacao();
             autorizacao.setNome(nomeAutorizacao);

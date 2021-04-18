@@ -45,6 +45,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("select u from Usuario u inner join u.autorizacoes a where a.nome = ?1 order by u.nome")
     public List<Usuario> buscarUsuariosPorNomeDeAutorizacao(String nomeAutorizacao);
 
-
+    public boolean existsByNome(String nome);
 
 }
