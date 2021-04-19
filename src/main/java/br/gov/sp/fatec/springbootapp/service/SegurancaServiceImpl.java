@@ -70,5 +70,12 @@ public class SegurancaServiceImpl implements SegurancaService {
         throw new RuntimeException("Usuário não encontrado -> nome: " + nome);
 
     }
+
+    @Override
+    public Autorizacao buscarAutorizacaoPorNome(String nomeAutorizacao) {
+        Autorizacao autorizacao = autorizacaoRepo.findByNome(nomeAutorizacao.toUpperCase());
+        if (autorizacao != null) return autorizacao;
+        throw new RuntimeException("Autorizacao não encontrada -> nomeAutorizacao: " + nomeAutorizacao);
+    }
     
 }

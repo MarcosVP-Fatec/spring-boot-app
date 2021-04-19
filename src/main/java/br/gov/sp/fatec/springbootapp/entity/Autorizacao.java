@@ -12,16 +12,21 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import br.gov.sp.fatec.springbootapp.controller.View;
 
 @Entity
 @Table(name = "aut_autorizacao")
 public class Autorizacao {
 
+    @JsonView(View.UsuarioCompleto.class)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "aut_id")
     private Long id;
 
+    @JsonView( { View.UsuarioResumo.class , View.AutorizacaoResumo.class } )
     @Column(name = "aut_nome")
     private String nome;
 
@@ -30,8 +35,9 @@ public class Autorizacao {
      * Não precisa mapear as colunas (Join Table) mas precisa colocar o atributo que contém este mapeamento
      * O atributo "autorizacoes" do Usuario.java é onde está o mapeamento dos joins.
      */
+    @JsonView( View.AutorizacaoResumo.class )
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "autorizacoes") 
-    @JsonIgnore
+    //@JsonIgnore
     private Set<Usuario> usuarios;
 
     public Long getId() {
