@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
+import br.gov.sp.fatec.springbootapp.exception.RegistroJaExisteException;
+import br.gov.sp.fatec.springbootapp.exception.RegistroNaoEncontratoException;
 import br.gov.sp.fatec.springbootapp.repository.AutorizacaoRepository;
 import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
 
@@ -29,7 +31,7 @@ public class SegurancaServiceImpl implements SegurancaService {
         Autorizacao autorizacao = autorizacaoRepo.findByNome(nomeAutorizacao);
 
         if (usuarioRepo.existsByNome(nome.toUpperCase())){
-            throw new RuntimeException("Usuário já cadastrado -> nome: " + nome);            
+            throw new RegistroJaExisteException("Usuário já cadastrado -> nome: " + nome);            
         }
 
         // Se a autorização com o nome passado não existir vamos crar uma. Criado aqui porque esta tabela só tem o campo nome mesmo.
@@ -59,7 +61,7 @@ public class SegurancaServiceImpl implements SegurancaService {
         if (usuarioOp.isPresent()){
             return usuarioOp.get();
         }
-        throw new RuntimeException("Usuário não encontrado -> id: " + String.valueOf(id));
+        throw new RegistroNaoEncontratoException("Usuário não encontrado -> id: " + String.valueOf(id));
     }
 
     @Override
@@ -67,7 +69,7 @@ public class SegurancaServiceImpl implements SegurancaService {
 
         Usuario usuario = usuarioRepo.findByNome(nome.toUpperCase());
         if (usuario != null) return usuario;
-        throw new RuntimeException("Usuário não encontrado -> nome: " + nome);
+        throw new RegistroNaoEncontratoException("Usuário não encontrado -> nome: " + nome);
 
     }
 
@@ -75,7 +77,7 @@ public class SegurancaServiceImpl implements SegurancaService {
     public Autorizacao buscarAutorizacaoPorNome(String nomeAutorizacao) {
         Autorizacao autorizacao = autorizacaoRepo.findByNome(nomeAutorizacao.toUpperCase());
         if (autorizacao != null) return autorizacao;
-        throw new RuntimeException("Autorizacao não encontrada -> nomeAutorizacao: " + nomeAutorizacao);
+        throw new RegistroNaoEncontratoException("Autorizacao não encontrada -> nomeAutorizacao: " + nomeAutorizacao);
     }
     
 }
