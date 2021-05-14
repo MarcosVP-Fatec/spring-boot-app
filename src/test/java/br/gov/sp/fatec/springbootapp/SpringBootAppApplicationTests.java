@@ -1,5 +1,6 @@
 package br.gov.sp.fatec.springbootapp;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
@@ -19,7 +20,6 @@ import br.gov.sp.fatec.springbootapp.service.SegurancaService;
 
 @SpringBootTest
 @Transactional
-@Rollback
 class SpringBootAppApplicationTests {
 
     @Autowired 
@@ -181,7 +181,7 @@ class SpringBootAppApplicationTests {
     void testePesqUsuarioNomeSenhaQuery(){
         testeQuebra("PESQUISA USUARIO - Nome e Senha - Query");
         this.criaUsuarioTestolino();
-        assertNotNull(usuarioRepo.buscarUsuarioPorNomeESenha("Testolino", "senha123"));
+        assertTrue(usuarioRepo.buscarUsuarioPorNomeESenha("Testolino", "senha123") != null);
     }
 
     @Test
@@ -196,6 +196,20 @@ class SpringBootAppApplicationTests {
     void testarServicoCriaUsuario(){
         Usuario usuario = segurancaService.criarUsuario("Pessoa#normal", "senha123", "#REGRA_NORMAL");
         assertNotNull(usuario);
+    }
+
+    @BeforeAll
+    static void init(@Autowired JdbcTemplate jdbcTemplate){
+        
+        jdbcTemplate.update(
+            "insert into usr_usuario (usr_nome, usr_senha) values(?,?)", "Mineda", "SenhaF0rte");
+
+        jdbcTemplate.update(
+            "insert into aut_autorizacao (aut_nome) values(?)", "ROLE_ADMIN");
+
+        jdbcTemplate.update(
+            "insert into uau_usuario_autorizacao (usr_id, aut_id) values(?,?)", 1L, 1L);
+
     }
 
 }
