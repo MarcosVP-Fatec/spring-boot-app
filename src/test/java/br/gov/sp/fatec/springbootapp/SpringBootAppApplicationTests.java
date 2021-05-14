@@ -174,7 +174,7 @@ class SpringBootAppApplicationTests {
     void testePesqUsuarioNomeSenha(){
         testeQuebra("PESQUISA USUARIO - Nome e Senha");
         this.criaUsuarioTestolino();
-        assertNotNull(usuarioRepo.findByNomeAndSenha("Testolino", "senha123"));
+        assertTrue(usuarioRepo.findByNomeAndSenha("Testolino", "senha123") != null);
     }
 
     @Test
