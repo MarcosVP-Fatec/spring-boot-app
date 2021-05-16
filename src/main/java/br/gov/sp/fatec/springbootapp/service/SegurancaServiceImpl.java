@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
 import br.gov.sp.fatec.springbootapp.exception.RegistroJaExisteException;
-import br.gov.sp.fatec.springbootapp.exception.RegistroNaoEncontratoException;
+import br.gov.sp.fatec.springbootapp.exception.RegistroNaoEncontradoException;
 import br.gov.sp.fatec.springbootapp.repository.AutorizacaoRepository;
 import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
 
@@ -62,50 +62,57 @@ public class SegurancaServiceImpl implements SegurancaService {
     }
 
     @Override
-    // @PreAuthorize("isAuthenticated()")
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Usuario> buscarTodosUsuarios() {
         return usuarioRepo.findAll();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USUARIO')")
     @Override
     public Usuario buscarUsuarioPorId(Long id) {
         Optional<Usuario> usuarioOp = usuarioRepo.findById(id);
         if (usuarioOp.isPresent()) {
             return usuarioOp.get();
         }
-        throw new RegistroNaoEncontratoException("Usuário não encontrado -> id: " + String.valueOf(id));
+        throw new RegistroNaoEncontradoException("Usuário não encontrado -> id: " + String.valueOf(id));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Override
     public Usuario buscarUsuarioPorNome(String nome) {
 
         Usuario usuario = usuarioRepo.findByNome(nome.toUpperCase());
         if (usuario != null)
             return usuario;
-        throw new RegistroNaoEncontratoException("Usuário não encontrado -> nome: " + nome);
+        throw new RegistroNaoEncontradoException("Usuário não encontrado -> nome: " + nome);
 
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Override
     public Autorizacao buscarAutorizacaoPorNome(String nomeAutorizacao) {
         Autorizacao autorizacao = autorizacaoRepo.findByNome(nomeAutorizacao.toUpperCase());
         if (autorizacao != null)
             return autorizacao;
-        throw new RegistroNaoEncontratoException("Autorizacao não encontrada -> nomeAutorizacao: " + nomeAutorizacao);
+        throw new RegistroNaoEncontradoException("Autorizacao não encontrada: " + nomeAutorizacao);
     }
 
+    /**
+     * Este método mostra para o spring onde estão os detalhes (regras) que deverão ser usadas como em
+     * hasRole('ROLE_ADMIN'), por exemplo
+     */
     @Override
-    public UserDetails loadUserByUserName(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepo.findByNome(username);
         if(usuario==null){
             throw new UsernameNotFoundException("Usuário não encontrado: " + username);
         }
         return User.builder().username(username)
             .password(usuario.getSenha())
-            .authorities(usuario.getAutorizacoes().stream()
-                .map(Autorizacao::getNome).collect(Collectors.toList())
-                .toArray(new String[usuario.getAutorizacoes().size()]))
+            .authorities(usuario.getAutorizacoes().stream() //authorities espere um vetor de string. 
+                                                            //Pega as autorizações e transforma em uma lista
+                .map(Autorizacao::getNome).collect(Collectors.toList()) //Retira só o nome cria uma lista 
+                .toArray(new String[usuario.getAutorizacoes().size()])) //Passa para um array de strings
             .build();
     }
 

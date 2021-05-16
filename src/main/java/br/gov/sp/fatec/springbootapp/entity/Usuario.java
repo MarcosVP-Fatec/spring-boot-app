@@ -73,11 +73,11 @@ public class Usuario {
     }
 
     public String getTxtSenha() {
-        return this.senha;
+        return this.txtSenha;
     }
 
     public void setTxtSenha(String senha) {
-        this.senha = senha;
+        this.txtSenha = senha;
     }
 
     public Set<Autorizacao> getAutorizacoes() {
