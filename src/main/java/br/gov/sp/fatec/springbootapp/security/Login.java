@@ -6,6 +6,8 @@ public class Login {
 
     private String password;
 
+    private String autorizacao;
+
     private String token;
 
     public String getUsername() {
@@ -31,5 +33,14 @@ public class Login {
     public void setToken(String token) {
         this.token = token;
     }
+
+    public String getAutorizacao() {
+        return autorizacao;
+    }
+
+    public void setAutorizacao(String autorizacao) {
+        this.autorizacao = autorizacao;
+    }
+
 
 }
