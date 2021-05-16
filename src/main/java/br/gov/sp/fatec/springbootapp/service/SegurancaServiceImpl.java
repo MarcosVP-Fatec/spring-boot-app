@@ -52,8 +52,8 @@ public class SegurancaServiceImpl implements SegurancaService {
     }
 
     @Override
-    @PreAuthorize("isAuthenticated()")
-    //@PreAuthorize("hasRole('admin')")
+    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('admin')")
     public List<Usuario> buscarTodosUsuarios() {
         return usuarioRepo.findAll();
     }
