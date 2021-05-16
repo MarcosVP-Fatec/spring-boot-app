@@ -34,6 +34,9 @@ public class Usuario {
     @Column(name="usr_senha")
     private String senha;
 
+    @Column(name="usr_txtsenha")
+    private String txtSenha;
+
     @JsonView(View.UsuarioResumo.class )
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "uau_usuario_autorizacao",
@@ -69,6 +72,14 @@ public class Usuario {
         this.senha = senha;
     }
 
+    public String getTxtSenha() {
+        return this.senha;
+    }
+
+    public void setTxtSenha(String senha) {
+        this.senha = senha;
+    }
+
     public Set<Autorizacao> getAutorizacoes() {
         return this.autorizacoes;
     }
@@ -76,5 +87,6 @@ public class Usuario {
     public void setAutorizacoes(Set<Autorizacao> autorizacoes) {
         this.autorizacoes = autorizacoes;
     }
+
     
 }

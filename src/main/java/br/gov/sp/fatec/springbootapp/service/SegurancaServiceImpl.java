@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,9 @@ public class SegurancaServiceImpl implements SegurancaService {
 
     @Autowired
     private UsuarioRepository usuarioRepo;
+
+    @Autowired
+    private PasswordEncoder pwEncoder;
 
     @Override
     @Transactional // Garante que tudo que ocorre dentro da classe é uma transação. Se colocado no
@@ -44,7 +48,8 @@ public class SegurancaServiceImpl implements SegurancaService {
 
         Usuario usuario = new Usuario();
         usuario.setNome(nome);
-        usuario.setSenha(senha);
+        usuario.setTxtSenha(senha);
+        usuario.setSenha(pwEncoder.encode(senha));
         usuario.setAutorizacoes(new HashSet<Autorizacao>());
         usuario.getAutorizacoes().add(autorizacao);
         usuarioRepo.save(usuario);
