@@ -3,9 +3,13 @@ package br.gov.sp.fatec.springbootapp.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +39,12 @@ public class SegurancaServiceImpl implements SegurancaService {
     public Usuario criarUsuario(String nome, String senha, String nomeAutorizacao) {
         Autorizacao autorizacao = autorizacaoRepo.findByNome(nomeAutorizacao);
 
-        if (usuarioRepo.existsByNome(nome.toUpperCase())){
-            throw new RegistroJaExisteException("Usuário já cadastrado -> nome: " + nome);            
+        if (usuarioRepo.existsByNome(nome.toUpperCase())) {
+            throw new RegistroJaExisteException("Usuário já cadastrado -> nome: " + nome);
         }
 
-        // Se a autorização com o nome passado não existir vamos crar uma. Criado aqui porque esta tabela só tem o campo nome mesmo.
+        // Se a autorização com o nome passado não existir vamos crar uma. Criado aqui
+        // porque esta tabela só tem o campo nome mesmo.
         if (autorizacao == null) {
             autorizacao = new Autorizacao();
             autorizacao.setNome(nomeAutorizacao);
@@ -57,7 +62,7 @@ public class SegurancaServiceImpl implements SegurancaService {
     }
 
     @Override
-    //@PreAuthorize("isAuthenticated()")
+    // @PreAuthorize("isAuthenticated()")
     @PreAuthorize("hasRole('admin')")
     public List<Usuario> buscarTodosUsuarios() {
         return usuarioRepo.findAll();
@@ -66,7 +71,7 @@ public class SegurancaServiceImpl implements SegurancaService {
     @Override
     public Usuario buscarUsuarioPorId(Long id) {
         Optional<Usuario> usuarioOp = usuarioRepo.findById(id);
-        if (usuarioOp.isPresent()){
+        if (usuarioOp.isPresent()) {
             return usuarioOp.get();
         }
         throw new RegistroNaoEncontratoException("Usuário não encontrado -> id: " + String.valueOf(id));
@@ -76,7 +81,8 @@ public class SegurancaServiceImpl implements SegurancaService {
     public Usuario buscarUsuarioPorNome(String nome) {
 
         Usuario usuario = usuarioRepo.findByNome(nome.toUpperCase());
-        if (usuario != null) return usuario;
+        if (usuario != null)
+            return usuario;
         throw new RegistroNaoEncontratoException("Usuário não encontrado -> nome: " + nome);
 
     }
@@ -84,8 +90,23 @@ public class SegurancaServiceImpl implements SegurancaService {
     @Override
     public Autorizacao buscarAutorizacaoPorNome(String nomeAutorizacao) {
         Autorizacao autorizacao = autorizacaoRepo.findByNome(nomeAutorizacao.toUpperCase());
-        if (autorizacao != null) return autorizacao;
+        if (autorizacao != null)
+            return autorizacao;
         throw new RegistroNaoEncontratoException("Autorizacao não encontrada -> nomeAutorizacao: " + nomeAutorizacao);
     }
-    
+
+    @Override
+    public UserDetails loadUserByUserName(String username) throws UsernameNotFoundException {
+        Usuario usuario = usuarioRepo.findByNome(username);
+        if(usuario==null){
+            throw new UsernameNotFoundException("Usuário não encontrado: " + username);
+        }
+        return User.builder().username(username)
+            .password(usuario.getSenha())
+            .authorities(usuario.getAutorizacoes().stream()
+                .map(Autorizacao::getNome).collect(Collectors.toList())
+                .toArray(new String[usuario.getAutorizacoes().size()]))
+            .build();
+    }
+
 }
