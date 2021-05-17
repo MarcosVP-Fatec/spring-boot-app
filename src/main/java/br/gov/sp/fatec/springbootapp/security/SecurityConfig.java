@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity // Habilita segurança e configurações padrões
 @EnableGlobalMethodSecurity(prePostEnabled = true) // Significa que a segurança será habilitada por anotação.
@@ -27,8 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Basicamente garante que somente as páginas rodando dentro do spring podem
         // acessar o back-end
         // Como estamos usando o REST isto não é interessante.
-        http.csrf().disable().httpBasic().and()
+        http.csrf().disable() //.httpBasic().and() isso foi tirado porque não é mais autenticação básica
                 // this disables session creation on Spring Secutiry
+                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Irá usar nova requisição
                                                                                              // com credenciais.
     }

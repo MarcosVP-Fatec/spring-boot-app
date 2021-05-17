@@ -8,8 +8,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -47,7 +49,7 @@ public class JwtUtils {
   /**
    * Método que abre um token
    */
-  public static User parseToken(String token) throws JsonParseException, JsonMappingException, IOException {
+  public static Authentication parseToken(String token) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper mapper = new ObjectMapper();
     String credentialsJson = Jwts.parser()  //Já faz todas as validações
         .setSigningKey(KEY)                 //Chave de criptografia
@@ -57,24 +59,18 @@ public class JwtUtils {
 
     //Transformar de volta na classe Login        
     Login usuario = mapper.readValue(credentialsJson, Login.class);
-/*    
+
+    //Cria os detalhes (Regras)
     UserDetails userDetails = User.builder()
                     .username(usuario.getUsername())
                     .password("secret")
                     .authorities(usuario.getAutorizacao())
                     .build();
-*/
 
-    return (User) User.builder()
-        .username(usuario.getUsername())
-        .password("secret")
-        .authorities(usuario.getAutorizacao())
-        .build();
-
-/*
+    //Gera o token
     return new UsernamePasswordAuthenticationToken( usuario.getUsername()
                                                   , usuario.getPassword()
-                                                  , userDetails.getAuthorities());*/
+                                                  , userDetails.getAuthorities());
   }
 
 }
